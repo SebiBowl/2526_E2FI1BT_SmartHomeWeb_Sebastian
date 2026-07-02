@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="de-de">
+
+<head>
+    <meta charset="UTF-8">
+    <title>SmartHomeWeb - Sensor bearbeiten</title>
+    {% load bootstrap5 %}
+    {% bootstrap_css %}
+    {% bootstrap_javascript %}
+</head>
+
+<body class="bg-light">
+    <div class="container py-4" style="max-width: 640px;">
+        <a href="{% url 'index' %}" class="btn btn-secondary mb-3">&larr; Startseite</a>
+
+        <div class="card shadow-sm">
+            <div class="card-body">
+                <h1 class="h3 card-title mb-4">Eigenschaften des Sensors</h1>
+                <form method="post" action="">
+                    {% csrf_token %}
+                    {% bootstrap_form form %}
+                    <div class="d-flex gap-2 mt-3">
+                        <button type="submit" class="btn btn-primary">Speichern</button>
+                        <a href="/web/sensors/" class="btn btn-outline-secondary">Abbrechen</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>

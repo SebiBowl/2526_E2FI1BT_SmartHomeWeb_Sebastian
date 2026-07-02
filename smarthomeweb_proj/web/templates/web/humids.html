@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="de-de">
+<head>
+    <meta charset="UTF-8">
+    <title>SmartHomeWeb - Startseite</title>
+    <!--
+    <link rel="stylesheet" href="../../static/web/styles/base.css">
+    <link rel="stylesheet" href="../../static/web/styles/smarthomestyles_static.css">
+    -->
+    {% load bootstrap5 %}
+    {% bootstrap_css %}
+    {% bootstrap_javascript %}
+    <!--
+        https://getbootstrap.com/docs/5.3/getting-started/javascript/#data-attributes
+
+    -->
+</head>
+
+<body>
+    <div class="humids">
+        <h1>Luftfeuchtigkeit:</h1>
+        <a href="{% url 'index' %}" class="btn btn-secondary mb-3">&larr; Startseite</a>
+        <div class="mb-3">
+            <form method="post" action="">
+                {% csrf_token %}
+                {{ form }}
+                <br>
+                <input type="submit" value="Filter...">
+            </form>
+        </div>
+        <ul>
+            {% for humid in humidslist %}
+            <li>
+                {{ humid.id }},
+                {{ humid.luftfeuchte }},
+                {{ humid.sen.raum }},
+                {{ humid.datum }}
+            </li>
+            {% endfor %}
+        </ul>
+    </div>
+</body>
+</html>

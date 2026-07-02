@@ -1,0 +1,298 @@
+/* =========================================================
+   SmartHomeWeb – Startseite (main.css)
+   AESTHETIK: "AURORA GLASS" – dunkel, premium, futuristisch
+   Wird als LETZTES geladen -> ueberschreibt grid.css.
+   Farben zentral ueber CSS-Variablen (:root) steuerbar.
+   ========================================================= */
+
+/* ---------- Palette / Design-Tokens ---------- */
+:root {
+    /* Hintergrund-Verlauf (Indigo -> Violett -> Teal) */
+    --bg-1: #0b1026;
+    --bg-2: #241a4d;
+    --bg-3: #3a1c63;
+    --bg-4: #0f3b48;
+
+    /* Glas-Oberflaechen */
+    --glass: rgba(255, 255, 255, 0.07);
+    --glass-strong: rgba(255, 255, 255, 0.11);
+    --glass-border: rgba(255, 255, 255, 0.16);
+
+    /* Neon-Akzente */
+    --neon-violet: #b58bff;
+    --neon-teal: #4fe6d6;
+    --neon-pink: #ff8fce;
+
+    /* Text – Kontrast leicht angehoben (WCAG AA fuer Fliesstext) */
+    --ink: #f2f4ff;
+    --ink-soft: rgba(242, 244, 255, 0.86);
+    --ink-mute: rgba(242, 244, 255, 0.64);
+
+    --radius: 20px;
+    --radius-sm: 12px;
+
+    /* Weiche, geschichtete Schatten + Glow */
+    --shadow: 0 18px 45px rgba(0, 0, 0, 0.45);
+    --shadow-hover: 0 26px 70px rgba(0, 0, 0, 0.55);
+    --glow-violet: 0 0 30px rgba(181, 139, 255, 0.45);
+    --glow-teal: 0 0 30px rgba(79, 230, 214, 0.40);
+
+    /* Robuster, offline-tauglicher Font-Stack (kein @import) */
+    --stack: "Segoe UI", system-ui, -apple-system, "Helvetica Neue", Arial, sans-serif;
+    --mono: "Cascadia Code", "Consolas", "SF Mono", ui-monospace, "Courier New", monospace;
+}
+
+*, *::before, *::after { box-sizing: border-box; }
+
+html { font-size: 16px; }
+
+/* ---------- Body: tiefer Mehrfach-Verlauf ("Aurora") ---------- */
+body {
+    margin: 0;
+    min-height: 100vh;
+    padding: clamp(18px, 4vw, 48px);
+    color: var(--ink);
+    line-height: 1.65;
+    font-family: var(--stack);
+    background:
+        radial-gradient(1100px 700px at 12% -8%, rgba(181, 139, 255, 0.30), transparent 60%),
+        radial-gradient(1000px 720px at 92% 8%, rgba(79, 230, 214, 0.22), transparent 60%),
+        radial-gradient(900px 900px at 78% 108%, rgba(255, 143, 206, 0.16), transparent 55%),
+        linear-gradient(150deg, var(--bg-1) 0%, var(--bg-2) 38%, var(--bg-3) 68%, var(--bg-4) 100%);
+    background-attachment: fixed;
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+}
+
+/* ---------- Typografische Skala ---------- */
+h1, h3, h4, h5 { line-height: 1.2; font-weight: 700; margin: 0; }
+
+h1 {
+    font-size: clamp(2.4rem, 5vw, 3.6rem);
+    letter-spacing: -0.02em;
+    margin-bottom: 0.35em;
+    /* Sanfter Verlaufstext */
+    background: linear-gradient(100deg, #fff 0%, var(--neon-violet) 45%, var(--neon-teal) 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    text-shadow: 0 0 40px rgba(181, 139, 255, 0.25);
+}
+
+h3 {
+    font-size: clamp(1.35rem, 2.4vw, 1.6rem);
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 0.6em;
+    color: #fff;
+}
+
+h4 {
+    font-size: clamp(1.3rem, 2.4vw, 1.55rem);
+    margin-bottom: 0.5em;
+    color: var(--neon-teal);
+}
+
+h5 {
+    font-size: 1rem;
+    font-weight: 500;
+    color: var(--ink-soft);
+    margin-bottom: 0.6em;
+    letter-spacing: 0.01em;
+}
+
+p {
+    font-size: 1rem;
+    color: var(--ink-soft);
+    margin: 0 0 1em;
+}
+p:last-child { margin-bottom: 0; }
+
+/* ---------- Inline-Code-Auszeichnungen (auf Glas gut lesbar) ---------- */
+.css, .html {
+    font-family: var(--mono);
+    font-size: 0.9em;
+    padding: 0.1em 0.45em;
+    border-radius: 6px;
+    border: 1px solid var(--glass-border);
+    white-space: nowrap;
+}
+.css  { color: var(--neon-teal); background: rgba(79, 230, 214, 0.12); }
+.html { color: var(--neon-pink); background: rgba(255, 143, 206, 0.12); }
+
+/* =========================================================
+   RESET der grid.css-Basis (div { display:grid; bg:#fff })
+   -> class-Selektoren schlagen den blanken div-Selektor
+   ========================================================= */
+div {
+    display: block;
+    background: transparent;
+    padding: 0;
+    border-radius: 0;
+}
+
+/* ---------- Kopfbereich (Header, ueber dem Verlauf) ---------- */
+.header {
+    display: block;
+    max-width: 1200px;
+    margin: 0 auto clamp(24px, 4vw, 40px);
+    padding: clamp(16px, 3vw, 28px) clamp(4px, 2vw, 12px);
+    background: transparent;
+}
+.header p { max-width: 72ch; color: var(--ink-soft); }
+
+/* =========================================================
+   Haupt-Grid (.grid-header) – 2 Spalten, Bento-artig
+   ========================================================= */
+.grid-header {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: clamp(16px, 2.2vw, 26px);
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0;
+    background: transparent;
+}
+
+/* Breite Einleitung spannt beide Spalten */
+.grid-header .introduction { grid-column: 1 / -1; }
+
+/* ---------- Glass-Karten (gleiche Hoehe, Button unten) ---------- */
+.grid-header > div {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    padding: clamp(20px, 2.4vw, 30px);
+    border-radius: var(--radius);
+    background: var(--glass);
+    border: 1px solid var(--glass-border);
+    box-shadow: var(--shadow);
+    -webkit-backdrop-filter: blur(16px) saturate(140%);
+    backdrop-filter: blur(16px) saturate(140%);
+    position: relative;
+    overflow: hidden;
+    transition: transform 0.28s ease, box-shadow 0.28s ease, border-color 0.28s ease;
+}
+
+/* Feiner Lichtschimmer an der oberen Kante */
+.grid-header > div::before {
+    content: "";
+    position: absolute;
+    inset: 0 0 auto 0;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.55), transparent);
+}
+
+/* Text-Karten (Einleitung/five ohne Button) fuellen Rest sauber aus */
+.grid-header > div p { flex: 0 0 auto; }
+
+/* Einleitung etwas heller hervorgehoben */
+.grid-header .introduction { background: var(--glass-strong); }
+
+/* Hover: anheben + Neon-Glow (nur Feature-Karten) */
+.grid-header > div:hover {
+    transform: translateY(-6px);
+    border-color: rgba(181, 139, 255, 0.55);
+    box-shadow: var(--shadow-hover), var(--glow-violet);
+}
+.grid-header .introduction:hover,
+.grid-header .five:hover {
+    transform: none;
+    box-shadow: var(--shadow);
+    border-color: var(--glass-border);
+}
+
+/* ---------- Icons in den Karten-Ueberschriften ---------- */
+.grid-header h3 svg {
+    width: 30px;
+    height: 30px;
+    flex: 0 0 auto;
+    color: var(--neon-teal);
+    fill: currentColor;
+    filter: drop-shadow(0 0 8px rgba(79, 230, 214, 0.55));
+}
+/* Luftdruck-Icon (.three) traegt inline stroke/fill:#000 -> per
+   Filter (invert+hue-rotate) auf einen hellen Teal-Ton bringen,
+   da CSS fill/color den Inline-Wert nicht per Spezifitaet schlaegt. */
+.grid-header .three h3 svg {
+    fill: none;
+    color: initial;
+    filter: invert(85%) sepia(38%) saturate(720%) hue-rotate(120deg)
+            brightness(1.05) drop-shadow(0 0 8px rgba(79, 230, 214, 0.55));
+}
+
+/* Karten-Text nutzt weichere Tinte */
+.grid-header p { color: var(--ink-soft); }
+
+/* =========================================================
+   Buttons / a.btn – Neon-Pille, unten angepinnt
+   ========================================================= */
+.btn, button {
+    margin-top: auto;               /* pinnt an den unteren Kartenrand */
+    align-self: flex-start;         /* Breite = Inhalt */
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 0.7rem 1.5rem;
+    font: inherit;
+    font-weight: 600;
+    letter-spacing: 0.01em;
+    color: #0b1026;                 /* dunkle Schrift auf hellem Verlauf = AA */
+    text-decoration: none;
+    cursor: pointer;
+    border: 1px solid rgba(255, 255, 255, 0.25);
+    border-radius: 999px;
+    background: linear-gradient(100deg, var(--neon-violet), var(--neon-teal));
+    box-shadow: 0 8px 22px rgba(79, 230, 214, 0.30), inset 0 1px 0 rgba(255, 255, 255, 0.4);
+    transition: transform 0.18s ease, box-shadow 0.22s ease, filter 0.22s ease;
+}
+.btn:hover, button:hover {
+    transform: translateY(-2px);
+    filter: brightness(1.08);
+    box-shadow: 0 12px 30px rgba(181, 139, 255, 0.50), inset 0 1px 0 rgba(255, 255, 255, 0.5);
+}
+.btn:active, button:active { transform: translateY(0); }
+
+/* Tastatur-Zugaenglichkeit */
+.btn:focus-visible, button:focus-visible {
+    outline: 3px solid var(--neon-teal);
+    outline-offset: 3px;
+}
+
+/* =========================================================
+   Responsive – eine Spalte, kleinere Typo/Abstaende
+   ========================================================= */
+@media (max-width: 768px) {
+    body { padding: 16px; }
+
+    .grid-header {
+        grid-template-columns: 1fr;   /* alles einspaltig */
+        gap: 16px;
+    }
+    /* Spannungen zuruecksetzen, da nur noch eine Spalte */
+    .grid-header .introduction,
+    .grid-header .one,
+    .grid-header .two,
+    .grid-header .three,
+    .grid-header .four,
+    .grid-header .five,
+    .grid-header .six {
+        grid-column: auto;
+        grid-row: auto;
+    }
+
+    h1 { font-size: 2.1rem; }
+    h3 { font-size: 1.25rem; }
+    h4 { font-size: 1.2rem; }
+
+    .grid-header > div { padding: 18px; }
+    .css, .html { white-space: normal; word-break: break-word; }
+}
+
+/* Bewegung reduzieren, falls gewuenscht */
+@media (prefers-reduced-motion: reduce) {
+    * { transition: none !important; }
+    .grid-header > div:hover { transform: none; }
+    .btn:hover, button:hover { transform: none; }
+}

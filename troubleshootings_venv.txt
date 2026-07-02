@@ -1,0 +1,59 @@
+venv-Probleme:
+
+1. Der Pfad darf kein "#" enthalten:
+-> Entweder "#" entfernen oder
+-> relativen Pfad angeben oder
+-> Pfad in "" schreiben
+
+Befehls-Prompt öffnen Strg + Shift + Pfad
+Terminal öffnen Strg + Shift + Ö
+
+Nötige libs (siehe auch requirements.txt)
+pip install django
+pip install djangorestframework
+pip install django-bootstrap-V5
+pip install mysqlclient
+
+Installierte Pakete und Versionen merken.
+"pip freeze > requirements.txt"
+Pakete wiederherstellen:
+"pip install -r requirements.txt"
+
+-----------------------------------------------------------------------------
+venv komlett neu aufbauen und Libs hinzufügen, falls eine requirements.txt-Datei existiert:
+- .venv-Verzeichnis komplett löschen
+
+- .venv-Verzeichnis über Terminal oder IDE neu anlegen:
+
+Terminal:
+-- ins oberste Verzeichnis wechseln, damit die venv parallel zum Projektverzeichnis liegt.
+-- "python -m venv .venv" und warten bis das .venv-Verzeichnis erstellt wurde.
+-- falls die venv nicht aktiviert ist, dann aktivieren mit ".\.venv\Scripts\activate"
+-- die nötigen Libs nachinstallieren, die sich in der requirements.txt befinden mit
+"pip install -r requirements.txt" dazu in das Verzeichnis wechseln, in dem sich die 
+requirements.txt befindet.
+
+Über die IDE (geht etwas komfortabler und die requirements.txt sollte auch
+ gleich gefungen werden. Es spielt auch keine Rolle in welchem Verzeichnis man sind befindet.)
+-- Mit Strg + Shift + P die Commandleiste öffnen
+-- "Python:Select Interpreter" auswählen
+-- "+ Create Virtual Environment..." auswählen
+-- "Venv ....." auswählen
+-- Python 3.x.x ~\.......    (Global) als Vorlage auswählen, oder was halt gerade gefunden wurde
+-- Jetzt sollte die requirements.txt-Datei gefunden worden sein. Diese anhaken, dann werden
+auch gleich die Libs mit installiert. Ein Fenster unten rechts erscheint... Warten bis alles
+fertig ist.
+
+---> Mit "python manage.py runserver" die Webseite starten (xampp nicht vergessen)
+
+
+-------------------------------------------------------------------------
+Wenn man die venv-Umgebung bei Start von VSCode festlegen will:
+-- ".vscode"-Verzeichnis anlegen (wenn nicht schon da)
+-- Datei namens "settings.json" dort anlegen und
+-- 
+{
+  "python.defaultInterpreterPath": "${workspaceFolder}/.venv/Scripts/python.exe",
+  "python.terminal.activateEnvironment": true
+}
+hinein kopieren.
