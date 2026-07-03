@@ -31,6 +31,10 @@ ALLOWED_HOSTS = []
 # Application definition
 
 INSTALLED_APPS = [
+    # "daphne" muss GANZ OBEN stehen: dadurch startet "runserver" automatisch den
+    # ASGI-/Daphne-Server, der WebSockets kann (statt des reinen HTTP-Dev-Servers).
+    "daphne",
+    "channels",
     "django.contrib.admin",
     "django.contrib.auth",
     "django.contrib.contenttypes",
@@ -71,6 +75,31 @@ TEMPLATES = [
 ]
 
 WSGI_APPLICATION = "smarthomeweb_proj.wsgi.application"
+
+# --- WebSockets / Django Channels ---------------------------------------------
+# Einstiegspunkt für ASGI. Darüber laufen die WebSocket-Verbindungen (siehe asgi.py).
+ASGI_APPLICATION = "smarthomeweb_proj.asgi.application"
+
+# Der "Channel Layer" ist die Vermittlungsstelle, über die der Server EINE Nachricht
+# an mehrere verbundene Browser gleichzeitig schicken kann (Broadcast an eine Gruppe).
+# InMemory = einfachste Variante, kein Redis nötig – ideal zum Entwickeln/Lernen.
+# (Für echten Mehrprozess-/Produktivbetrieb würde man später auf Redis umstellen.)
+CHANNEL_LAYERS = {
+    "default": {
+        "BACKEND": "channels.layers.InMemoryChannelLayer",
+    }
+}
+
+# --- MQTT (Sensordaten vom ESP32) ---------------------------------------------
+# Der ESP32 (Adafruit Feather, siehe D:/code.py) sendet seine BME280-Messwerte
+# an diesen Broker. Django hört mit und zeigt/speichert die Werte.
+# WICHTIG: Die Broker-IP ändert sich je nach Netzwerk/Hotspot – hier anpassen!
+MQTT_ENABLED = True                  # auf False setzen, wenn gerade kein Broker läuft
+MQTT_BROKER = "172.20.10.8"          # IP-Adresse des MQTT-Brokers
+MQTT_PORT = 1883
+MQTT_USERNAME = ""                   # leer = keine Anmeldung nötig
+MQTT_PASSWORD = ""
+MQTT_TOPIC = "smarthome/sensor/#"    # "#" = alle Sensoren + alle Messgrößen abonnieren
 
 
 # Database
@@ -115,7 +144,7 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/4.0/howto/static-files/
 
-STATIC_URL = "static/"
+STATIC_URL = "/static/"
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.0/ref/settings/#default-auto-field

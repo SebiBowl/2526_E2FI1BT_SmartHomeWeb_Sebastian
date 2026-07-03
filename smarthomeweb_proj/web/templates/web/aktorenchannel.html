@@ -1,0 +1,140 @@
+{% extends "web/base.html" %}
+
+{% block title %}Live-Sensordaten – SmartHomeWeb{% endblock %}
+
+{% block content %}
+<!-- Seitenkopf -->
+<div class="d-flex align-items-center gap-3 mb-4">
+    <span class="page-icon" style="--accent:#e8590c;--accent-soft:#fff1e6;">
+        <i class="bi bi-broadcast"></i>
+    </span>
+    <div>
+        <h1 class="h3 mb-0">Live-Sensordaten</h1>
+        <p class="text-muted mb-0">Echtzeit-Werte vom ESP32 – über MQTT empfangen, per WebSocket im Browser</p>
+    </div>
+</div>
+
+<!-- Verbindungsstatus -->
+<div class="mb-4">
+    Verbindung: <span id="status" class="badge bg-secondary">verbinde&hellip;</span>
+</div>
+
+<!-- Drei Live-Karten -->
+<div class="row g-3 mb-4">
+    <div class="col-md-4">
+        <div class="card live-card border-0 shadow-sm h-100 text-center"
+             id="karte-temperature" style="--accent:#e8590c;--accent-soft:#fff1e6;">
+            <div class="card-body">
+                <span class="page-icon"><i class="bi bi-thermometer-half"></i></span>
+                <div class="stat-label">Temperatur</div>
+                <div class="live-value" id="wert-temperature">–</div>
+                <div class="text-muted small" id="zeit-temperature">noch keine Daten</div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card live-card border-0 shadow-sm h-100 text-center"
+             id="karte-humidity" style="--accent:#1971c2;--accent-soft:#e7f5ff;">
+            <div class="card-body">
+                <span class="page-icon"><i class="bi bi-droplet-half"></i></span>
+                <div class="stat-label">Luftfeuchte</div>
+                <div class="live-value" id="wert-humidity">–</div>
+                <div class="text-muted small" id="zeit-humidity">noch keine Daten</div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card live-card border-0 shadow-sm h-100 text-center"
+             id="karte-pressure" style="--accent:#7048e8;--accent-soft:#f3f0ff;">
+            <div class="card-body">
+                <span class="page-icon"><i class="bi bi-speedometer2"></i></span>
+                <div class="stat-label">Luftdruck</div>
+                <div class="live-value" id="wert-pressure">–</div>
+                <div class="text-muted small" id="zeit-pressure">noch keine Daten</div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Ereignis-Protokoll -->
+<div class="card border-0 shadow-sm">
+    <div class="card-body">
+        <div class="d-flex justify-content-between align-items-center mb-2">
+            <h2 class="h6 text-uppercase text-muted mb-0">
+                <i class="bi bi-list-ul me-1"></i>Ereignis-Protokoll
+            </h2>
+            <button id="leerenBtn" class="btn btn-sm btn-outline-secondary" type="button">Leeren</button>
+        </div>
+        <div id="log" class="border rounded p-2 bg-white"
+             style="height: 240px; overflow-y: auto; font-family: monospace; font-size: 0.85rem;">
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    // ========================================================================
+    //  Live-Sensordaten über WebSocket empfangen
+    //  Der Server (MQTT-Thread) schickt jeden Messwert als JSON hierher.
+    // ========================================================================
+
+    const statusEl = document.getElementById("status");
+    const logEl    = document.getElementById("log");
+
+    const proto = window.location.protocol === "https:" ? "wss:" : "ws:";
+    const WS_URL = proto + "//" + window.location.host + "/ws/aktoren/";
+
+    let socket;
+
+    function verbinden() {
+        socket = new WebSocket(WS_URL);
+        socket.onopen = () => setStatus(true);
+        socket.onclose = () => { setStatus(false); setTimeout(verbinden, 2000); };
+        socket.onerror = () => socket.close();
+
+        socket.onmessage = (event) => {
+            const data = JSON.parse(event.data);
+            if (data.typ === "messwert" && data.groesse) {
+                // Passende Karte aktualisieren (temperature / humidity / pressure)
+                aktualisiereKarte(data);
+                logZeile("messwert", data.name + ": " + data.wert + " " + data.einheit);
+            } else if (data.text) {
+                logZeile(data.typ, data.text);
+            }
+        };
+    }
+
+    // Schreibt den neuen Wert in die richtige Karte + kleine Aufblink-Animation.
+    function aktualisiereKarte(data) {
+        const wertEl = document.getElementById("wert-" + data.groesse);
+        const zeitEl = document.getElementById("zeit-" + data.groesse);
+        const karte  = document.getElementById("karte-" + data.groesse);
+        if (wertEl) wertEl.textContent = data.wert + " " + data.einheit;
+        if (zeitEl) zeitEl.textContent = "aktualisiert: " + new Date().toLocaleTimeString();
+        if (karte) {   // kurz aufblinken lassen
+            karte.classList.remove("updated");
+            void karte.offsetWidth;          // Trick: Animation neu auslösen
+            karte.classList.add("updated");
+        }
+    }
+
+    function setStatus(verbunden) {
+        statusEl.textContent = verbunden ? "verbunden" : "getrennt";
+        statusEl.className = "badge " + (verbunden ? "bg-success" : "bg-danger");
+    }
+
+    function logZeile(typ, text) {
+        const zeile = document.createElement("div");
+        zeile.textContent = "[" + new Date().toLocaleTimeString() + "] " + text;
+        if (typ === "messwert") zeile.style.color = "#0d6efd";
+        else if (typ === "info") zeile.style.color = "#198754";
+        logEl.appendChild(zeile);
+        logEl.scrollTop = logEl.scrollHeight;
+    }
+
+    document.getElementById("leerenBtn").onclick = () => { logEl.innerHTML = ""; };
+
+    verbinden();
+</script>
+{% endblock %}

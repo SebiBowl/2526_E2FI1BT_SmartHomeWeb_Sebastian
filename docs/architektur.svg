@@ -1,0 +1,128 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1320" height="710" viewBox="0 0 1320 710">
+  <defs>
+    <style>
+      text { font-family: 'Segoe UI', Arial, sans-serif; fill: #212529; }
+      .t-title { font-size: 26px; font-weight: 700; }
+      .t-sub   { font-size: 15px; fill: #868e96; }
+      .b-title { font-size: 16px; font-weight: 700; }
+      .b-h     { font-size: 15px; font-weight: 700; }
+      .b-txt   { font-size: 13px; }
+      .small   { font-size: 12px; fill: #868e96; }
+      .mono    { font-family: Consolas, monospace; font-size: 12px; }
+      .lbl-mqtt{ font-size: 11px; fill: #e8590c; font-weight: 600; }
+      .lbl-ws  { font-size: 11px; fill: #1971c2; font-weight: 600; }
+      .lbl-int { font-size: 11px; fill: #495057; }
+    </style>
+    <marker id="mq"  markerWidth="9" markerHeight="9" refX="7" refY="3" orient="auto"><path d="M0,0 L7,3 L0,6 Z" fill="#e8590c"/></marker>
+    <marker id="ws"  markerWidth="9" markerHeight="9" refX="7" refY="3" orient="auto"><path d="M0,0 L7,3 L0,6 Z" fill="#1971c2"/></marker>
+    <marker id="wsr" markerWidth="9" markerHeight="9" refX="1" refY="3" orient="auto"><path d="M7,0 L0,3 L7,6 Z" fill="#1971c2"/></marker>
+    <marker id="int" markerWidth="9" markerHeight="9" refX="7" refY="3" orient="auto"><path d="M0,0 L7,3 L0,6 Z" fill="#868e96"/></marker>
+  </defs>
+
+  <rect width="1320" height="710" fill="#ffffff"/>
+
+  <!-- Titel -->
+  <text x="660" y="42" class="t-title" text-anchor="middle">SmartHomeWeb &#8211; Architektur: MQTT &amp; WebSocket</text>
+  <text x="660" y="70" class="t-sub" text-anchor="middle">Vom ESP32-Sensor &#252;ber den MQTT-Broker bis in den Browser</text>
+
+  <!-- ===================== Zone: Hotspot ===================== -->
+  <rect x="25" y="105" width="545" height="380" rx="14" fill="#fff9db" stroke="#f59f00" stroke-width="2" stroke-dasharray="8 5"/>
+  <text x="45" y="132" class="b-h" fill="#e67700">iPhone-Hotspot (WLAN-Netz)</text>
+
+  <!-- ESP32 -->
+  <rect x="55" y="165" width="225" height="200" rx="10" fill="#f1f3f5" stroke="#495057" stroke-width="2"/>
+  <text x="167" y="200" class="b-title" text-anchor="middle">ESP32</text>
+  <text x="167" y="226" class="b-txt" text-anchor="middle">Feather ESP32-S2</text>
+  <text x="167" y="248" class="b-txt" text-anchor="middle">+ BME280-Sensor</text>
+  <text x="167" y="286" class="small" text-anchor="middle">misst</text>
+  <text x="167" y="306" class="b-txt" text-anchor="middle">Temperatur &#183; Feuchte</text>
+  <text x="167" y="324" class="b-txt" text-anchor="middle">&#183; Luftdruck</text>
+  <text x="167" y="352" class="small" text-anchor="middle">code.py (CircuitPython)</text>
+
+  <!-- Broker -->
+  <rect x="350" y="215" width="200" height="140" rx="10" fill="#fff4e6" stroke="#e8590c" stroke-width="2"/>
+  <text x="450" y="252" class="b-title" text-anchor="middle" fill="#d9480f">MQTT-Broker</text>
+  <text x="450" y="276" class="b-txt" text-anchor="middle">(Mosquitto)</text>
+  <text x="450" y="306" class="mono" text-anchor="middle">172.20.10.8</text>
+  <text x="450" y="328" class="small" text-anchor="middle">Port 1883</text>
+
+  <!-- Pfeil ESP32 -> Broker -->
+  <text x="315" y="270" class="lbl-mqtt" text-anchor="middle">MQTT</text>
+  <text x="315" y="283" class="lbl-mqtt" text-anchor="middle">publish</text>
+  <line x1="280" y1="300" x2="346" y2="300" stroke="#e8590c" stroke-width="2.5" marker-end="url(#mq)"/>
+
+  <!-- ===================== Zone: Django ===================== -->
+  <rect x="630" y="150" width="400" height="335" rx="14" fill="#ebfbee" stroke="#2b8a3e" stroke-width="2.5"/>
+  <text x="650" y="180" class="b-title" fill="#2b8a3e">Django-Server (ASGI / Daphne)</text>
+
+  <!-- paho -->
+  <rect x="650" y="205" width="170" height="115" rx="9" fill="#ffffff" stroke="#e8590c" stroke-width="2"/>
+  <text x="735" y="238" class="b-h" text-anchor="middle">paho-mqtt</text>
+  <text x="735" y="258" class="b-txt" text-anchor="middle">Client (Thread)</text>
+  <text x="735" y="286" class="small" text-anchor="middle">abonniert</text>
+  <text x="735" y="304" class="mono" text-anchor="middle">sensor/#</text>
+
+  <!-- Channels -->
+  <rect x="850" y="205" width="160" height="115" rx="9" fill="#ffffff" stroke="#1971c2" stroke-width="2"/>
+  <text x="930" y="236" class="b-h" text-anchor="middle" fill="#1864ab">Channels</text>
+  <text x="930" y="256" class="b-txt" text-anchor="middle">Consumer +</text>
+  <text x="930" y="274" class="b-txt" text-anchor="middle">Channel&#160;Layer</text>
+  <text x="930" y="300" class="small" text-anchor="middle">Gruppe &#8222;aktoren&#8220;</text>
+
+  <!-- Pfeil paho -> Channels (intern, live) -->
+  <text x="835" y="248" class="lbl-int" text-anchor="middle">&#9312;</text>
+  <line x1="820" y1="258" x2="847" y2="258" stroke="#868e96" stroke-width="2" marker-end="url(#int)"/>
+
+  <!-- Broker -> Django (paho) -->
+  <text x="598" y="243" class="lbl-mqtt" text-anchor="middle">MQTT subscribe</text>
+  <text x="598" y="256" class="mono" text-anchor="middle" fill="#e8590c" font-size="10">smarthome/sensor/#</text>
+  <line x1="550" y1="285" x2="647" y2="262" stroke="#e8590c" stroke-width="2.5" marker-end="url(#mq)"/>
+
+  <!-- Pfeil paho -> DB (intern, speichern) -->
+  <line x1="735" y1="320" x2="735" y2="508" stroke="#868e96" stroke-width="2" marker-end="url(#int)"/>
+  <text x="748" y="415" class="lbl-int">&#9313; speichern</text>
+  <text x="748" y="430" class="small">(Django ORM)</text>
+
+  <!-- ===================== MySQL Zylinder ===================== -->
+  <path d="M645,522 L645,585 A90,15 0 0 0 825,585 L825,522" fill="#f3f0ff" stroke="#7048e8" stroke-width="2"/>
+  <ellipse cx="735" cy="522" rx="90" ry="15" fill="#f3f0ff" stroke="#7048e8" stroke-width="2"/>
+  <text x="735" y="552" class="b-h" text-anchor="middle" fill="#5f3dc4">MySQL-Datenbank</text>
+  <text x="735" y="573" class="b-txt" text-anchor="middle" fill="#5f3dc4">werte-Tabelle</text>
+
+  <!-- ===================== Zone: Browser ===================== -->
+  <rect x="1065" y="195" width="230" height="165" rx="10" fill="#e7f5ff" stroke="#1971c2" stroke-width="2"/>
+  <text x="1180" y="223" class="b-title" text-anchor="middle" fill="#1864ab">Browser</text>
+  <text x="1180" y="244" class="mono" text-anchor="middle">/web/aktorenchannel</text>
+  <!-- Mini-Karten -->
+  <rect x="1088" y="262" width="62" height="66" rx="6" fill="#ffffff" stroke="#e8590c" stroke-width="1.5"/>
+  <text x="1119" y="292" text-anchor="middle" font-size="15" font-weight="700" fill="#e8590c">21.5</text>
+  <text x="1119" y="312" text-anchor="middle" class="small">&#176;C</text>
+  <rect x="1155" y="262" width="62" height="66" rx="6" fill="#ffffff" stroke="#1971c2" stroke-width="1.5"/>
+  <text x="1186" y="292" text-anchor="middle" font-size="15" font-weight="700" fill="#1971c2">55</text>
+  <text x="1186" y="312" text-anchor="middle" class="small">%</text>
+  <rect x="1222" y="262" width="62" height="66" rx="6" fill="#ffffff" stroke="#7048e8" stroke-width="1.5"/>
+  <text x="1253" y="292" text-anchor="middle" font-size="14" font-weight="700" fill="#7048e8">1013</text>
+  <text x="1253" y="312" text-anchor="middle" class="small">hPa</text>
+
+  <text x="1180" y="385" class="small" text-anchor="middle">&#8230; gleichzeitig an ALLE verbundenen Browser</text>
+
+  <!-- Django (Channels) -> Browser (WebSocket, bidirektional) -->
+  <text x="1042" y="240" class="lbl-ws" text-anchor="middle">WebSocket</text>
+  <text x="1042" y="253" class="mono" text-anchor="middle" fill="#1971c2" font-size="10">ws://&#8230;/ws/aktoren/</text>
+  <line x1="1012" y1="262" x2="1063" y2="270" stroke="#1971c2" stroke-width="2.5" marker-start="url(#wsr)" marker-end="url(#ws)"/>
+
+  <!-- ===================== Legende ===================== -->
+  <rect x="25" y="605" width="1270" height="80" rx="10" fill="#f8f9fa" stroke="#dee2e6" stroke-width="1"/>
+  <text x="45" y="632" class="b-h" fill="#495057">Legende</text>
+
+  <line x1="150" y1="628" x2="188" y2="628" stroke="#e8590c" stroke-width="3" marker-end="url(#mq)"/>
+  <text x="196" y="632" class="b-txt">MQTT &#8211; Sensordaten (TCP, Port 1883)</text>
+
+  <line x1="470" y1="628" x2="508" y2="628" stroke="#1971c2" stroke-width="3" marker-end="url(#ws)"/>
+  <text x="516" y="632" class="b-txt">WebSocket &#8211; Live-Updates Browser &#8596; Server</text>
+
+  <line x1="870" y1="628" x2="908" y2="628" stroke="#868e96" stroke-width="3" marker-end="url(#int)"/>
+  <text x="916" y="632" class="b-txt">intern: &#9312; Live-Broadcast (group_send) &#183; &#9313; Speichern (ORM)</text>
+
+  <text x="45" y="666" class="small" font-style="italic">Wichtig: Der Browser spricht NIE direkt mit dem MQTT-Broker &#8211; Django ist die Br&#252;cke (empf&#228;ngt per MQTT, verteilt per WebSocket, speichert in der DB).</text>
+</svg>

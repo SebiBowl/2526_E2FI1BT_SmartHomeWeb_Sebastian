@@ -1,0 +1,56 @@
+{% comment %}
+Wiederverwendbare Statistik-Kacheln (Min / Max / Durchschnitt / Anzahl).
+Erwartet im Kontext:
+  stats   -> dict mit minimum, maximum, durchschnitt, anzahl (aus der View)
+  einheit -> z. B. "°C", "%", "hPa" (per include ... with einheit="°C")
+{% endcomment %}
+<div class="col-6 col-lg-3">
+    <div class="card stat-card border-0 shadow-sm h-100">
+        <div class="card-body d-flex align-items-center gap-3">
+            <span class="stat-icon"><i class="bi bi-arrow-down-short"></i></span>
+            <div class="min-w-0">
+                <div class="stat-label">Minimum</div>
+                <div class="stat-value">
+                    {% if stats.minimum != None %}{{ stats.minimum|floatformat:1 }}<small>&nbsp;{{ einheit }}</small>{% else %}<span class="text-muted">–</span>{% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="col-6 col-lg-3">
+    <div class="card stat-card border-0 shadow-sm h-100">
+        <div class="card-body d-flex align-items-center gap-3">
+            <span class="stat-icon"><i class="bi bi-arrow-up-short"></i></span>
+            <div class="min-w-0">
+                <div class="stat-label">Maximum</div>
+                <div class="stat-value">
+                    {% if stats.maximum != None %}{{ stats.maximum|floatformat:1 }}<small>&nbsp;{{ einheit }}</small>{% else %}<span class="text-muted">–</span>{% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="col-6 col-lg-3">
+    <div class="card stat-card border-0 shadow-sm h-100">
+        <div class="card-body d-flex align-items-center gap-3">
+            <span class="stat-icon"><i class="bi bi-graph-up"></i></span>
+            <div class="min-w-0">
+                <div class="stat-label">Durchschnitt</div>
+                <div class="stat-value">
+                    {% if stats.durchschnitt != None %}{{ stats.durchschnitt|floatformat:1 }}<small>&nbsp;{{ einheit }}</small>{% else %}<span class="text-muted">–</span>{% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="col-6 col-lg-3">
+    <div class="card stat-card border-0 shadow-sm h-100">
+        <div class="card-body d-flex align-items-center gap-3">
+            <span class="stat-icon"><i class="bi bi-hash"></i></span>
+            <div class="min-w-0">
+                <div class="stat-label">Messwerte</div>
+                <div class="stat-value">{{ stats.anzahl }}</div>
+            </div>
+        </div>
+    </div>
+</div>

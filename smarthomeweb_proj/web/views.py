@@ -5,13 +5,30 @@ from web.forms.TempsFilterForm import TempsFilterForm
 from web.forms.HumidsFilterForm import HumidsFilterForm
 from web.forms.PressFilterForm import PressFilterForm
 from web.forms.SensorCreateEditModelForm import SensorCreateEditModelForm
-from django.db.models import Max, Min
+from django.db.models import Max, Min, Avg, Count
 from datetime import datetime, timedelta
+
+
+def _werte_statistik(queryset, feld):
+    """Berechnet Min/Max/Durchschnitt/Anzahl für ein Feld des (gefilterten)
+    Querysets – liefert die Zahlen für die Statistik-Kacheln der Seiten."""
+    return queryset.aggregate(
+        minimum=Min(feld),
+        maximum=Max(feld),
+        durchschnitt=Avg(feld),
+        anzahl=Count("id"),
+    )
 
 
 def index(request):
     # return HttpResponse("Hello, world. You're at the web app.")
     return render(request, "web/index.html")
+
+
+def aktorenchannel(request):
+    # Liefert nur die HTML-Seite aus. Die eigentliche Live-Verbindung baut
+    # danach das JavaScript im Template per WebSocket auf (siehe aktorenchannel.html).
+    return render(request, "web/aktorenchannel.html")
 
 
 def display_sensors(request):
@@ -80,10 +97,16 @@ def display_temps(request):
                 temperatur__gte=lowerVal,
             )
 
+            stats = _werte_statistik(queryset, "temperatur")
             return render(
                 request,
                 "web/temps.html",
-                {"name": "Berg", "tempslist": list(queryset), "form": form},
+                {
+                    "name": "Berg",
+                    "tempslist": list(queryset),
+                    "form": form,
+                    "stats": stats,
+                },
             )
         else:
             return HttpResponse(f"Error! {form.errors}")
@@ -93,8 +116,12 @@ def display_temps(request):
         form.lowerVal = 4
         queryset = Werte.objects.all()
         tempListe = list(queryset)
-        # print(dict(queryset))
-        return render(request, "web/temps.html", {"form": form, "tempslist": tempListe})
+        stats = _werte_statistik(queryset, "temperatur")
+        return render(
+            request,
+            "web/temps.html",
+            {"form": form, "tempslist": tempListe, "stats": stats},
+        )
 
 
 def display_humids(request):
@@ -130,10 +157,16 @@ def display_humids(request):
                 luftfeuchte__gte=lowerVal,
             )
 
+            stats = _werte_statistik(queryset, "luftfeuchte")
             return render(
                 request,
                 "web/humids.html",
-                {"name": "Berg", "humidslist": list(queryset), "form": form},
+                {
+                    "name": "Berg",
+                    "humidslist": list(queryset),
+                    "form": form,
+                    "stats": stats,
+                },
             )
         else:
             return HttpResponse(f"Error! {form.errors}")
@@ -143,8 +176,11 @@ def display_humids(request):
         form.lowerVal = 4
         queryset = Werte.objects.all()
         humidListe = list(queryset)
+        stats = _werte_statistik(queryset, "luftfeuchte")
         return render(
-            request, "web/humids.html", {"form": form, "humidslist": humidListe}
+            request,
+            "web/humids.html",
+            {"form": form, "humidslist": humidListe, "stats": stats},
         )
 
 
@@ -177,10 +213,16 @@ def display_press(request):
                 luftdruck__gte=lowerVal,
             )
 
+            stats = _werte_statistik(queryset, "luftdruck")
             return render(
                 request,
                 "web/press.html",
-                {"name": "Berg", "presslist": list(queryset), "form": form},
+                {
+                    "name": "Berg",
+                    "presslist": list(queryset),
+                    "form": form,
+                    "stats": stats,
+                },
             )
         else:
             return HttpResponse(f"Error! {form.errors}")
@@ -190,8 +232,11 @@ def display_press(request):
         form.lowerVal = 4
         queryset = Werte.objects.all()
         pressListe = list(queryset)
+        stats = _werte_statistik(queryset, "luftdruck")
         return render(
-            request, "web/press.html", {"form": form, "presslist": pressListe}
+            request,
+            "web/press.html",
+            {"form": form, "presslist": pressListe, "stats": stats},
         )
 
 

@@ -1,47 +1,82 @@
-<!DOCTYPE html>
-<html lang="de-de">
-<head>
-    <meta charset="UTF-8">
-    <title>SmartHomeWeb - Startseite</title>
-    <!--
-    <link rel="stylesheet" href="../../static/web/styles/base.css">
-    <link rel="stylesheet" href="../../static/web/styles/smarthomestyles_static.css">
-    -->
-    {% load bootstrap5 %}
-    {% bootstrap_css %}
-    {% bootstrap_javascript %}
-    <!--
-        https://getbootstrap.com/docs/5.3/getting-started/javascript/#data-attributes
+{% extends "web/base.html" %}
+{% load bootstrap5 %}
 
-    -->
-</head>
+{% block title %}Temperaturen – SmartHomeWeb{% endblock %}
+{% block main_class %}theme-temp{% endblock %}
 
-<body>
-    <div class="temperaturen">
-        <h1>Temperaturen:</h1>
-        <a href="{% url 'index' %}" class="btn btn-secondary mb-3">&larr; Startseite</a>
-        <div class="mb-3">
-            <form method="post" action="">
-                {% csrf_token %}
-                {{ form }}
-                <br>
-                <input type="submit" value="Filter...">
-            </form>
-        </div>
-        <ul>
-            {% for temp in tempslist %}
-            <li>
-                {{ temp.id }},
-                {{ temp.temperatur }},
-                {{temp.sen.raum}},
-                {{temp.datum}},
-                <a href="{{temp.sen.id}}/">
-                    Details...
-                </a>
-                
-            </li>
-            {% endfor %}
-        </ul>
+{% block content %}
+<!-- Seitenkopf -->
+<div class="d-flex align-items-center gap-3 mb-4">
+    <span class="page-icon"><i class="bi bi-thermometer-half"></i></span>
+    <div>
+        <h1 class="h3 mb-0">Temperaturen</h1>
+        <p class="text-muted mb-0">Gemessene Temperaturwerte deiner Sensoren</p>
     </div>
-</body>
-</html>
+</div>
+
+<!-- Statistik-Kacheln -->
+<div class="row g-3 mb-4">
+    {% include "web/_stat_cards.html" with einheit="°C" %}
+</div>
+
+<!-- Filter -->
+<div class="card border-0 shadow-sm mb-4">
+    <div class="card-body">
+        <h2 class="h6 text-uppercase text-muted mb-3"><i class="bi bi-funnel me-1"></i>Filtern</h2>
+        <form method="post" action="">
+            {% csrf_token %}
+            <div class="row g-3">
+                <div class="col-sm-6 col-lg-3">{% bootstrap_field form.lowerVal %}</div>
+                <div class="col-sm-6 col-lg-3">{% bootstrap_field form.upperVal %}</div>
+                <div class="col-sm-6 col-lg-3">{% bootstrap_field form.vonDate %}</div>
+                <div class="col-sm-6 col-lg-3">{% bootstrap_field form.bisDate %}</div>
+            </div>
+            <button type="submit" class="btn btn-accent mt-3">
+                <i class="bi bi-search me-1"></i>Anzeigen
+            </button>
+        </form>
+    </div>
+</div>
+
+<!-- Messwert-Tabelle -->
+<div class="card border-0 shadow-sm">
+    <div class="card-body pb-2">
+        <h2 class="h6 text-uppercase text-muted mb-0"><i class="bi bi-table me-1"></i>Messwerte</h2>
+    </div>
+    <div class="table-responsive">
+        <table class="table table-hover align-middle mb-0">
+            <thead>
+                <tr>
+                    <th scope="col">ID</th>
+                    <th scope="col">Raum</th>
+                    <th scope="col">Temperatur</th>
+                    <th scope="col">Zeitpunkt</th>
+                    <th scope="col" class="text-end">Sensor</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for temp in tempslist %}
+                <tr>
+                    <td class="text-muted">{{ temp.id }}</td>
+                    <td>{{ temp.sen.raum }}</td>
+                    <td><span class="value-badge">{{ temp.temperatur }} °C</span></td>
+                    <td>{{ temp.datum|date:"d.m.Y H:i" }}</td>
+                    <td class="text-end">
+                        <a href="{{ temp.sen.id }}/" class="btn btn-sm btn-outline-secondary">
+                            Details
+                        </a>
+                    </td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="5" class="empty-state">
+                        <i class="bi bi-inbox fs-3 d-block mb-2"></i>
+                        Keine Messwerte im gewählten Bereich.
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

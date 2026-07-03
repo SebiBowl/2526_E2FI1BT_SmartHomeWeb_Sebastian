@@ -7,13 +7,9 @@ from datetime import datetime, timedelta
 
 class HumidsFilterForm(forms.Form):
     lowerVal = forms.DecimalField(
-        widget=forms.NumberInput(
-            attrs={
-                "class": "form-control form-control-lg",
-                "aria-label": ".form-control-lg example",
-            }
-        ),
-        label="Bitte untere Grenze eingeben:",
+        widget=forms.NumberInput(attrs={"placeholder": "z. B. 40.0", "step": "0.1"}),
+        label="Minimum (%)",
+        help_text="Leer = kein unteres Limit",
         required=False,
         max_value=60.0,
         min_value=-50.0,
@@ -22,32 +18,28 @@ class HumidsFilterForm(forms.Form):
     )
 
     upperVal = forms.DecimalField(
-        label="Bitte obere Grenze eingeben:",
-        widget=forms.NumberInput(attrs={"class": "form-control form-control-lg"}),
+        widget=forms.NumberInput(attrs={"placeholder": "z. B. 70.0", "step": "0.1"}),
+        label="Maximum (%)",
+        help_text="Leer = kein oberes Limit",
         max_value=60.0,
         min_value=-50.0,
         max_digits=3,
         decimal_places=1,
         required=False,
-        # initial=23.0
     )
 
     vonDate = forms.DateField(
         initial=datetime.today().replace(year=2022) - timedelta(days=5),
-        widget=forms.DateInput(
-            attrs={"class": "form-control form-control-lg"}, format="%d.%m.%Y"
-        ),
-        label="Bitte das Datum eingeben, ab wann die Feuchtigkeitswerte angezeigt werden sollen. (Default = vor 5 Tagen) ",
+        widget=forms.DateInput(attrs={"type": "date"}, format="%Y-%m-%d"),
+        label="Von",
         required=False,
-        input_formats=["%d.%m.%Y"],
+        input_formats=["%Y-%m-%d"],
     )
 
     bisDate = forms.DateField(
         initial=datetime.today().replace(year=2022),
-        widget=forms.DateInput(
-            attrs={"class": "form-control form-control-lg"}, format="%d.%m.%Y"
-        ),
-        label="Bitte das letzte Datum eingeben, bis zu dem Die Feuchtigkeitswerte angezeigt werden sollen. (Default = heute)",
-        input_formats=["%d.%m.%Y"],
+        widget=forms.DateInput(attrs={"type": "date"}, format="%Y-%m-%d"),
+        label="Bis",
+        input_formats=["%Y-%m-%d"],
         required=False,
     )

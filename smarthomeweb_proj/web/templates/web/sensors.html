@@ -1,68 +1,56 @@
-<!DOCTYPE html>
-<html lang="de-de">
+{% extends "web/base.html" %}
 
-<head>
-    <meta charset="UTF-8">
-    <title>SmartHomeWeb - Sensoren konfigurieren</title>
-    {% load bootstrap5 %}
-    {% bootstrap_css %}
-    {% bootstrap_javascript %}
-</head>
+{% block title %}Sensoren – SmartHomeWeb{% endblock %}
 
-<body class="bg-light">
-    <div class="container py-4">
-        <a href="{% url 'index' %}" class="btn btn-secondary mb-3">&larr; Startseite</a>
-
-        <div class="card shadow-sm mb-4">
-            <div class="card-body">
-                <h2 class="card-title mb-3">Alle Smart-Home-Sensoren</h2>
-                <p class="text-muted mb-0">
-                    Hier kannst du die hinterlegten Sensoren und Aktoren verwalten &ndash;
-                    Raum, IP-Adresse und Konfiguration bearbeiten oder neue Geräte anlegen.
-                </p>
-            </div>
-        </div>
-
-        <div class="d-flex justify-content-between align-items-center mb-3">
-            <h3 class="mb-0">Aktive Sensoren</h3>
-            <a href="sensor_new/" class="btn btn-success">+ Neuen Sensor eintragen</a>
-        </div>
-
-        <div class="card shadow-sm">
-            <div class="table-responsive">
-                <table class="table table-hover align-middle mb-0">
-                    <thead class="table-light">
-                        <tr>
-                            <th scope="col">ID</th>
-                            <th scope="col">Raum</th>
-                            <th scope="col">IP-Adresse</th>
-                            <th scope="col" class="text-end">Aktion</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {% for sensor in sensorlist %}
-                        <tr>
-                            <td>{{ sensor.id }}</td>
-                            <td>{{ sensor.raum }}</td>
-                            <td>{{ sensor.ip }}</td>
-                            <td class="text-end">
-                                <a href="editsensor/{{ sensor.id }}/" class="btn btn-sm btn-outline-primary">
-                                    Bearbeiten
-                                </a>
-                            </td>
-                        </tr>
-                        {% empty %}
-                        <tr>
-                            <td colspan="4" class="text-center text-muted py-4">
-                                Noch keine Sensoren vorhanden.
-                            </td>
-                        </tr>
-                        {% endfor %}
-                    </tbody>
-                </table>
-            </div>
-        </div>
+{% block content %}
+<!-- Seitenkopf -->
+<div class="d-flex align-items-center gap-3 mb-4">
+    <span class="page-icon" style="--accent:#2f9e44;--accent-soft:#ebfbee;">
+        <i class="bi bi-cpu-fill"></i>
+    </span>
+    <div>
+        <h1 class="h3 mb-0">Sensoren &amp; Aktoren</h1>
+        <p class="text-muted mb-0">Geräte verwalten – Raum, IP-Adresse und Konfiguration</p>
     </div>
-</body>
+</div>
 
-</html>
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <h2 class="h5 mb-0">Aktive Sensoren</h2>
+    <a href="sensor_new/" class="btn btn-success">
+        <i class="bi bi-plus-lg me-1"></i>Neuen Sensor eintragen
+    </a>
+</div>
+
+<div class="card border-0 shadow-sm">
+    <div class="table-responsive">
+        <table class="table table-hover align-middle mb-0">
+            <thead>
+                <tr>
+                    <th scope="col">ID</th>
+                    <th scope="col">Raum</th>
+                    <th scope="col">IP-Adresse</th>
+                    <th scope="col" class="text-end">Aktion</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for sensor in sensorlist %}
+                <tr>
+                    <td class="text-muted">{{ sensor.id }}</td>
+                    <td>{{ sensor.raum }}</td>
+                    <td>{{ sensor.ip }}</td>
+                    <td class="text-end">
+                        <a href="editsensor/{{ sensor.id }}/" class="btn btn-sm btn-outline-primary">
+                            <i class="bi bi-pencil me-1"></i>Bearbeiten
+                        </a>
+                    </td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="4" class="empty-state">Noch keine Sensoren vorhanden.</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

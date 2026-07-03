@@ -1,0 +1,154 @@
+/* ==========================================================================
+   dashboard.css – Feinschliff für die SmartHomeWeb-Seiten.
+   Baut auf Bootstrap 5 auf und ergänzt nur ein paar eigene Akzente.
+   ========================================================================== */
+
+body {
+    background-color: #f1f3f5;
+    color: #212529;
+}
+
+/* --- Navigationsleiste ---------------------------------------------------- */
+.shw-navbar {
+    background: linear-gradient(90deg, #1e293b 0%, #334155 100%);
+}
+.shw-navbar .navbar-brand {
+    letter-spacing: .3px;
+}
+.shw-navbar .nav-link {
+    color: rgba(255, 255, 255, .75);
+    border-radius: .5rem;
+    padding-inline: .8rem;
+    transition: background-color .15s ease, color .15s ease;
+}
+.shw-navbar .nav-link:hover {
+    color: #fff;
+    background-color: rgba(255, 255, 255, .12);
+}
+.shw-navbar .nav-link.active {
+    color: #fff;
+    background-color: rgba(255, 255, 255, .20);
+    font-weight: 600;
+}
+
+/* --- Farbthemen je Seite -------------------------------------------------
+   Jede Datenseite setzt eine dieser Klassen auf <main>. Die Kacheln, Icons
+   und Buttons greifen dann über die CSS-Variablen darauf zu.               */
+.theme-temp  { --accent: #e8590c; --accent-soft: #fff1e6; }  /* warmes Orange  */
+.theme-humid { --accent: #1971c2; --accent-soft: #e7f5ff; }  /* Wasser-Blau    */
+.theme-press { --accent: #7048e8; --accent-soft: #f3f0ff; }  /* Luftdruck-Lila */
+
+/* --- Seitenkopf ----------------------------------------------------------- */
+.page-icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 3rem;
+    height: 3rem;
+    font-size: 1.5rem;
+    border-radius: 50%;
+    color: var(--accent, #495057);
+    background: var(--accent-soft, #e9ecef);
+    flex: 0 0 auto;
+}
+
+/* --- Statistik-Kacheln ---------------------------------------------------- */
+.stat-card {
+    border-radius: .9rem;
+    transition: transform .15s ease, box-shadow .15s ease;
+}
+.stat-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 .5rem 1.2rem rgba(0, 0, 0, .10) !important;
+}
+.stat-icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 2.6rem;
+    height: 2.6rem;
+    font-size: 1.25rem;
+    border-radius: .7rem;
+    color: var(--accent, #495057);
+    background: var(--accent-soft, #e9ecef);
+    flex: 0 0 auto;
+}
+.stat-label {
+    font-size: .78rem;
+    text-transform: uppercase;
+    letter-spacing: .4px;
+    color: #868e96;
+}
+.stat-value {
+    font-size: 1.45rem;
+    font-weight: 700;
+    line-height: 1.1;
+}
+.stat-value small {
+    font-size: .8rem;
+    font-weight: 600;
+    color: #868e96;
+}
+.min-w-0 { min-width: 0; }
+
+/* --- Karten allgemein ----------------------------------------------------- */
+.card {
+    border-radius: .9rem;
+}
+
+/* --- Tabelle -------------------------------------------------------------- */
+.table > thead th {
+    font-size: .78rem;
+    text-transform: uppercase;
+    letter-spacing: .4px;
+    color: #868e96;
+    border-bottom-width: 1px;
+}
+.value-badge {
+    display: inline-block;
+    padding: .2rem .6rem;
+    border-radius: 2rem;
+    font-weight: 600;
+    color: var(--accent, #495057);
+    background: var(--accent-soft, #e9ecef);
+    white-space: nowrap;
+}
+.empty-state {
+    padding: 2.5rem 1rem;
+    text-align: center;
+    color: #adb5bd;
+}
+
+/* --- Akzent-Button (nutzt die Themefarbe) --------------------------------- */
+.btn-accent {
+    color: #fff;
+    background-color: var(--accent, #495057);
+    border-color: var(--accent, #495057);
+}
+.btn-accent:hover,
+.btn-accent:focus {
+    color: #fff;
+    filter: brightness(.93);
+    background-color: var(--accent, #495057);
+    border-color: var(--accent, #495057);
+}
+
+/* --- Live-Sensordaten-Karten (Aktoren-Channel) ---------------------------- */
+.live-value {
+    font-size: 2.4rem;
+    font-weight: 700;
+    line-height: 1.1;
+    color: var(--accent, #212529);
+    margin-top: .25rem;
+}
+.live-card .page-icon {
+    margin: 0 auto .5rem;
+}
+.live-card.updated {
+    animation: pulse-accent .6s ease;
+}
+@keyframes pulse-accent {
+    0%   { box-shadow: 0 0 0 0 var(--accent-soft, #e9ecef); }
+    50%  { box-shadow: 0 0 0 .5rem var(--accent-soft, #e9ecef); }
+    100% { box-shadow: 0 0 0 0 rgba(0, 0, 0, 0); }
+}

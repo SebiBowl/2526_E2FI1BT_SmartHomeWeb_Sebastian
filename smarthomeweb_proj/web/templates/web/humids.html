@@ -1,43 +1,76 @@
-<!DOCTYPE html>
-<html lang="de-de">
-<head>
-    <meta charset="UTF-8">
-    <title>SmartHomeWeb - Startseite</title>
-    <!--
-    <link rel="stylesheet" href="../../static/web/styles/base.css">
-    <link rel="stylesheet" href="../../static/web/styles/smarthomestyles_static.css">
-    -->
-    {% load bootstrap5 %}
-    {% bootstrap_css %}
-    {% bootstrap_javascript %}
-    <!--
-        https://getbootstrap.com/docs/5.3/getting-started/javascript/#data-attributes
+{% extends "web/base.html" %}
+{% load bootstrap5 %}
 
-    -->
-</head>
+{% block title %}Luftfeuchtigkeit – SmartHomeWeb{% endblock %}
+{% block main_class %}theme-humid{% endblock %}
 
-<body>
-    <div class="humids">
-        <h1>Luftfeuchtigkeit:</h1>
-        <a href="{% url 'index' %}" class="btn btn-secondary mb-3">&larr; Startseite</a>
-        <div class="mb-3">
-            <form method="post" action="">
-                {% csrf_token %}
-                {{ form }}
-                <br>
-                <input type="submit" value="Filter...">
-            </form>
-        </div>
-        <ul>
-            {% for humid in humidslist %}
-            <li>
-                {{ humid.id }},
-                {{ humid.luftfeuchte }},
-                {{ humid.sen.raum }},
-                {{ humid.datum }}
-            </li>
-            {% endfor %}
-        </ul>
+{% block content %}
+<!-- Seitenkopf -->
+<div class="d-flex align-items-center gap-3 mb-4">
+    <span class="page-icon"><i class="bi bi-droplet-half"></i></span>
+    <div>
+        <h1 class="h3 mb-0">Luftfeuchtigkeit</h1>
+        <p class="text-muted mb-0">Gemessene Feuchtigkeitswerte deiner Sensoren</p>
     </div>
-</body>
-</html>
+</div>
+
+<!-- Statistik-Kacheln -->
+<div class="row g-3 mb-4">
+    {% include "web/_stat_cards.html" with einheit="%" %}
+</div>
+
+<!-- Filter -->
+<div class="card border-0 shadow-sm mb-4">
+    <div class="card-body">
+        <h2 class="h6 text-uppercase text-muted mb-3"><i class="bi bi-funnel me-1"></i>Filtern</h2>
+        <form method="post" action="">
+            {% csrf_token %}
+            <div class="row g-3">
+                <div class="col-sm-6 col-lg-3">{% bootstrap_field form.lowerVal %}</div>
+                <div class="col-sm-6 col-lg-3">{% bootstrap_field form.upperVal %}</div>
+                <div class="col-sm-6 col-lg-3">{% bootstrap_field form.vonDate %}</div>
+                <div class="col-sm-6 col-lg-3">{% bootstrap_field form.bisDate %}</div>
+            </div>
+            <button type="submit" class="btn btn-accent mt-3">
+                <i class="bi bi-search me-1"></i>Anzeigen
+            </button>
+        </form>
+    </div>
+</div>
+
+<!-- Messwert-Tabelle -->
+<div class="card border-0 shadow-sm">
+    <div class="card-body pb-2">
+        <h2 class="h6 text-uppercase text-muted mb-0"><i class="bi bi-table me-1"></i>Messwerte</h2>
+    </div>
+    <div class="table-responsive">
+        <table class="table table-hover align-middle mb-0">
+            <thead>
+                <tr>
+                    <th scope="col">ID</th>
+                    <th scope="col">Raum</th>
+                    <th scope="col">Luftfeuchte</th>
+                    <th scope="col">Zeitpunkt</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for humid in humidslist %}
+                <tr>
+                    <td class="text-muted">{{ humid.id }}</td>
+                    <td>{{ humid.sen.raum }}</td>
+                    <td><span class="value-badge">{{ humid.luftfeuchte }} %</span></td>
+                    <td>{{ humid.datum|date:"d.m.Y H:i" }}</td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="4" class="empty-state">
+                        <i class="bi bi-inbox fs-3 d-block mb-2"></i>
+                        Keine Messwerte im gewählten Bereich.
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

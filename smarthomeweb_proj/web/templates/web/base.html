@@ -1,0 +1,81 @@
+{% load bootstrap5 %}
+{% load static %}
+<!DOCTYPE html>
+<html lang="de-de">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}SmartHomeWeb{% endblock %}</title>
+
+    {# Bootstrap-CSS (kommt vom Paket django-bootstrap-v5) #}
+    {% bootstrap_css %}
+    {# Bootstrap-Icons (kleine Symbole wie das Thermometer) per CDN #}
+    <link rel="stylesheet"
+          href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    {# Unser eigener Feinschliff #}
+    <link rel="stylesheet" href="{% static 'web/styles/dashboard.css' %}">
+
+    {% block extra_head %}{% endblock %}
+</head>
+
+<body>
+    {% comment %}
+        Navigationsleiste: steht auf JEDER Seite gleich, weil sie hier im
+        base.html definiert ist. Der aktive Link wird anhand der aktuellen
+        Adresse (request.path) hervorgehoben.
+    {% endcomment %}
+    <nav class="navbar navbar-expand-lg navbar-dark shw-navbar shadow-sm">
+        <div class="container">
+            <a class="navbar-brand fw-bold" href="{% url 'index' %}">
+                <i class="bi bi-house-heart-fill me-1"></i> SmartHomeWeb
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
+                    data-bs-target="#hauptmenu" aria-controls="hauptmenu"
+                    aria-expanded="false" aria-label="Menü umschalten">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="hauptmenu">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <a class="nav-link {% if request.path == '/' or request.path == '/web/' %}active{% endif %}"
+                           href="{% url 'index' %}"><i class="bi bi-grid-1x2-fill me-1"></i>Start</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link {% if 'showtemps' in request.path %}active{% endif %}"
+                           href="/web/showtemps/"><i class="bi bi-thermometer-half me-1"></i>Temperatur</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link {% if 'showhumid' in request.path %}active{% endif %}"
+                           href="/web/showhumid/"><i class="bi bi-droplet-half me-1"></i>Luftfeuchte</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link {% if 'showpress' in request.path %}active{% endif %}"
+                           href="/web/showpress/"><i class="bi bi-speedometer2 me-1"></i>Luftdruck</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link {% if 'sensors' in request.path %}active{% endif %}"
+                           href="/web/sensors/"><i class="bi bi-cpu-fill me-1"></i>Sensoren</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link {% if 'aktorenchannel' in request.path %}active{% endif %}"
+                           href="/web/aktorenchannel"><i class="bi bi-broadcast me-1"></i>Live</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    {% comment %}
+        Hauptinhalt. Jede Seite füllt den content-Block. main_class setzt
+        das Farbthema (theme-temp / theme-humid / theme-press).
+    {% endcomment %}
+    <main class="container py-4 {% block main_class %}{% endblock %}">
+        {% block content %}{% endblock %}
+    </main>
+
+    {% bootstrap_javascript %}
+    {% block scripts %}{% endblock %}
+</body>
+
+</html>
